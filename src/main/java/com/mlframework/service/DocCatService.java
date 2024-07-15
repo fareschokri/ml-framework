@@ -1,9 +1,8 @@
 package com.mlframework.service;
 
+import com.mlframework.dataaccess.FileDataAccess;
 import opennlp.tools.doccat.*;
 import opennlp.tools.util.*;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.LineIterator;
 import com.mlframework.model.EntryLine;
 import org.springframework.stereotype.Service;
 
@@ -63,28 +62,14 @@ public class DocCatService {
             return "No Model loaded";
         } else{
             logger.info("Processing entries from file: {}", inputFile);
-            List<EntryLine> entryLines = getEntries(inputFile);
+            List<EntryLine> entryLines = FileDataAccess.getEntriesFromFile(inputFile);
             doClassify(entryLines);
-            writeResultsToFile(entryLines, outputFile);
+            FileDataAccess.writeResultsToFile(entryLines, outputFile);
             return "Entries processed and results saved to: "+ outputFile;
         }
     }
 
-    private List<EntryLine> getEntries(String inputFile) throws IOException {
-        logger.info("Reading entries from file: {}", inputFile);
-        List<EntryLine> entryLines = new ArrayList<>();
-        try (LineIterator iterator = FileUtils.lineIterator(new File(inputFile), "UTF-8")){
-            while (iterator.hasNext()) {
-                String line = iterator.nextLine();
-                String[] parts = line.split(",", 2);
-                EntryLine entryLine = new EntryLine();
-                entryLine.setText(parts[0]);
-                entryLines.add(entryLine);
-            }
-        }
-        logger.info("Total entries read: {}", entryLines.size());
-        return entryLines;
-    }
+
 
     private void doClassify(List<EntryLine> entryLines) {
             logger.info("Classifying entry lines.");
@@ -97,17 +82,6 @@ public class DocCatService {
             }
     }
 
-    private void writeResultsToFile(List<EntryLine> entryLines, String outputFile) throws IOException {
-        logger.info("Writing results to file: {}", outputFile);
-        try (FileWriter writer = new FileWriter(outputFile)) {
-            writer.append("Text,Classification\n");
-            for (EntryLine entryLine : entryLines) {
-                writer.append(entryLine.getText()).append(",")
-                        .append(entryLine.getLabel()).append("\n");
-            }
-        }
-        logger.info("Results written to file successfully.");
-    }
 
     public String getTextOutcomes(String message) {
         if (model == null) {
