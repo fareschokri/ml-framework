@@ -1,5 +1,8 @@
-package com.mlframework.service;
+package com.mlframework.service.impl;
 
+import com.mlframework.dataaccess.FileDataAccess;
+import com.mlframework.model.EntryLine;
+import com.mlframework.service.itf.ModelService;
 import opennlp.tools.langdetect.Language;
 import opennlp.tools.langdetect.LanguageDetector;
 import opennlp.tools.langdetect.LanguageDetectorME;
@@ -13,14 +16,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
-public class LanguageDetectorService {
+public class LanguageDetectorService implements ModelService {
 
     private LanguageDetector categorizer;
     private static final Logger logger = LoggerFactory.getLogger(LanguageDetectorService.class);
 
+    @Override
     public void loadModel(String modelFile) throws IOException {
         logger.info("Loading model from file: {}", modelFile);
         InputStream modelIn = new FileInputStream(modelFile);
@@ -29,9 +34,10 @@ public class LanguageDetectorService {
         logger.info("Model loaded successfully.");
     }
 
-    public String predictLanguage(String text){
+    @Override
+    public String processText(String text){
         if (categorizer == null )
-            return "No Model loaded";
+            return NO_MODEL_LOADED;
         logger.info("Predicting language for text: {}", text);
         Language bestLanguage = categorizer.predictLanguage(text);
         Map<String,String> result = new HashMap<>();
@@ -40,9 +46,23 @@ public class LanguageDetectorService {
         return result.toString();
     }
 
+    @Override
+    public String processFile(String inputFile, String outputFile) throws IOException {
+        if (categorizer == null) {
+            return NO_MODEL_LOADED;
+        } else{
+            logger.info("Processing entries from file: {}", inputFile);
+            List<EntryLine> entryLines = FileDataAccess.getEntriesFromFile(inputFile);
+            for (EntryLine entryLine : entryLines) {
+                entryLine.setLabel(categorizer.predictLanguage(entryLine.getText()).getLang());
+            }
+            FileDataAccess.writeResultsToFile(entryLines, outputFile);
+            return "Entries processed and results saved to: "+ outputFile;
+        }
+    }
     public String getLanguages(){
         if (categorizer == null )
-                return "No Model loaded";
+                return NO_MODEL_LOADED;
         logger.info("Getting all model languages");
         Language[] languages = categorizer.predictLanguages("");
         return Arrays.toString(languages);

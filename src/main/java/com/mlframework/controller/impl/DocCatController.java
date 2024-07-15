@@ -1,7 +1,8 @@
-package com.mlframework.controller;
+package com.mlframework.controller.impl;
 
 
-import com.mlframework.service.DocCatService;
+import com.mlframework.controller.itf.ModelController;
+import com.mlframework.service.impl.DocCatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/doccat")
-public class DocCatController {
+public class DocCatController implements ModelController {
 
     private static final Logger logger = LoggerFactory.getLogger(DocCatController.class);
 
@@ -40,6 +41,7 @@ public class DocCatController {
     }
 
     @PostMapping("/load")
+    @Override
     public String loadModel(@RequestParam String modelBinFile) {
         logger.info("Received request to load Model {}", modelBinFile);
         try {
@@ -50,20 +52,22 @@ public class DocCatController {
         }
     }
 
-    @PostMapping("/classify")
-    public String classifyEntries(@RequestParam String inputFile,@RequestParam String outputFile) {
+    @PostMapping("/process-file")
+    @Override
+    public String processFile(@RequestParam String inputFile, @RequestParam String outputFile) {
         logger.info("Received request to process entries from file: {} and save results to: {}", inputFile, outputFile);
         try {
-            return service.classifyEntries(inputFile, outputFile);
+            return service.processFile(inputFile, outputFile);
         } catch (IOException e) {
             return "Error processing entries: " + e.getMessage();
         }
     }
 
-    @GetMapping("/get-outcomes")
-    public String getTextOutcomes(@RequestParam String text) {
+    @GetMapping("/process-text")
+    @Override
+    public String processText(@RequestParam String text) {
         logger.info("Received request to get all outcomes and their probabilities for: {}", text);
-        return service.getTextOutcomes(text);
+        return service.processText(text);
     }
 }
 

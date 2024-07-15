@@ -1,7 +1,8 @@
-package com.mlframework.service;
+package com.mlframework.service.impl;
 
 import com.mlframework.dataaccess.FileDataAccess;
 import com.mlframework.model.EntryLine;
+import com.mlframework.service.itf.ModelService;
 import opennlp.tools.tokenize.Tokenizer;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
@@ -16,11 +17,11 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class TokenizerService {
+public class TokenizerService implements ModelService {
     TokenizerModel tokenizerModel;
     private static final Logger logger = LoggerFactory.getLogger(TokenizerService.class);
 
-
+    @Override
     public void loadModel(String modelFile) throws IOException {
         logger.info("Loading model from file: {}", modelFile);
         InputStream modelIn = new FileInputStream(modelFile);
@@ -29,22 +30,24 @@ public class TokenizerService {
 
     }
 
-    public String extractTokens(String text) {
+    @Override
+    public String processText(String text) {
         if (tokenizerModel == null) {
-            return "Tokenizer model is not loaded.";
+            return NO_MODEL_LOADED;
         }
         Tokenizer tokenizer = new TokenizerME(tokenizerModel);
         return Arrays.toString(tokenizer.tokenize(text));
     }
 
+    @Override
     public String processFile(String inputFile, String outputFile) throws IOException {
         if (tokenizerModel == null) {
-            return "No Model loaded";
+            return NO_MODEL_LOADED;
         } else{
             logger.info("Processing entries from file: {}", inputFile);
             List<EntryLine> entryLines = FileDataAccess.getEntriesFromFile(inputFile);
             for (EntryLine entryLine : entryLines) {
-                entryLine.setLabel(extractTokens(entryLine.getText()));
+                entryLine.setLabel(processText(entryLine.getText()));
             }
             FileDataAccess.writeResultsToFile(entryLines, outputFile);
             return "Entries processed and results saved to: "+ outputFile;

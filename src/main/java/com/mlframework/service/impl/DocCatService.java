@@ -1,6 +1,7 @@
-package com.mlframework.service;
+package com.mlframework.service.impl;
 
 import com.mlframework.dataaccess.FileDataAccess;
+import com.mlframework.service.itf.ModelService;
 import opennlp.tools.doccat.*;
 import opennlp.tools.util.*;
 import com.mlframework.model.EntryLine;
@@ -14,7 +15,7 @@ import java.util.*;
 
 
 @Service
-public class DocCatService {
+public class DocCatService implements ModelService {
 
     private DoccatModel model;
     private DocumentCategorizerME categorizer;
@@ -49,6 +50,7 @@ public class DocCatService {
         logger.info("Model training completed and saved successfully to {}.", modelBinOutput);
     }
 
+    @Override
     public void loadModel(String modelFile) throws IOException {
         logger.info("Loading model from file: {}", modelFile);
         InputStream modelIn = new FileInputStream(modelFile);
@@ -57,9 +59,10 @@ public class DocCatService {
         logger.info("Model loaded successfully.");
     }
 
-    public String classifyEntries(String inputFile, String outputFile) throws IOException {
+    @Override
+    public String processFile(String inputFile, String outputFile) throws IOException {
         if (model == null) {
-            return "No Model loaded";
+            return NO_MODEL_LOADED;
         } else{
             logger.info("Processing entries from file: {}", inputFile);
             List<EntryLine> entryLines = FileDataAccess.getEntriesFromFile(inputFile);
@@ -82,10 +85,10 @@ public class DocCatService {
             }
     }
 
-
-    public String getTextOutcomes(String message) {
+    @Override
+    public String processText(String message) {
         if (model == null) {
-            return "No model loaded";
+            return NO_MODEL_LOADED;
         } else{
             double [] testEval = model.getMaxentModel().eval(message.split(""));
             return model.getMaxentModel().getAllOutcomes(testEval);

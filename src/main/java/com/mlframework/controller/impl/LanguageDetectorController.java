@@ -1,6 +1,7 @@
-package com.mlframework.controller;
+package com.mlframework.controller.impl;
 
-import com.mlframework.service.LanguageDetectorService;
+import com.mlframework.controller.itf.ModelController;
+import com.mlframework.service.impl.LanguageDetectorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/lang-detector")
-public class LanguageDetectorController {
+public class LanguageDetectorController implements ModelController {
     private static final Logger logger = LoggerFactory.getLogger(LanguageDetectorController.class);
     private final LanguageDetectorService service;
 
@@ -20,6 +21,7 @@ public class LanguageDetectorController {
     }
 
     @PostMapping("/load")
+    @Override
     public String loadModel(@RequestParam String modelBinFile) {
         logger.info("Received request to load Model {}", modelBinFile);
         try {
@@ -30,12 +32,23 @@ public class LanguageDetectorController {
         }
     }
 
-    @GetMapping("/predict")
-    public String predictLang(@RequestParam String text) {
+    @GetMapping("/process-text")
+    @Override
+    public String processText(@RequestParam String text) {
         logger.info("Received request to predict language for: {}", text);
-        return service.predictLanguage(text);
+        return service.processText(text);
     }
 
+    @PostMapping("/process-file")
+    @Override
+    public String processFile(@RequestParam String inputFile,@RequestParam String outputFile) {
+        logger.info("Received request to process entries from file: {} and save results to: {}", inputFile, outputFile);
+        try {
+            return service.processFile(inputFile, outputFile);
+        } catch (IOException e) {
+            return "Error processing entries: " + e.getMessage();
+        }
+    }
     @GetMapping("/get-languages")
     public String getLanguages() {
         logger.info("Received request to get model languages");

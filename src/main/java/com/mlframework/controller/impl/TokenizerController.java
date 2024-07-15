@@ -1,6 +1,7 @@
-package com.mlframework.controller;
+package com.mlframework.controller.impl;
 
-import com.mlframework.service.TokenizerService;
+import com.mlframework.controller.itf.ModelController;
+import com.mlframework.service.impl.TokenizerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/tokenizer")
-public class TokenizerController {
+public class TokenizerController implements ModelController {
 
     private final TokenizerService service;
     private static final Logger logger = LoggerFactory.getLogger(TokenizerController.class);
@@ -19,6 +20,7 @@ public class TokenizerController {
     private TokenizerController(TokenizerService tokenizerService){this.service = tokenizerService;}
 
     @PostMapping("/load")
+    @Override
     public String loadModel(@RequestParam String modelBinFile) {
         logger.info("Received request to load Model {}", modelBinFile);
         try {
@@ -29,14 +31,16 @@ public class TokenizerController {
         }
     }
 
-    @GetMapping("/extract-tokens")
-    public String extractTokens(@RequestParam String text) {
+    @GetMapping("/process-text")
+    @Override
+    public String processText(@RequestParam String text) {
         logger.info("Received request to tokenize: {}", text);
-        return service.extractTokens(text);
+        return service.processText(text);
     }
 
-    @PostMapping("/get-file-tokens")
-    public String getEntriesTokens(@RequestParam String inputFile,@RequestParam String outputFile) {
+    @PostMapping("/process-file")
+    @Override
+    public String processFile(@RequestParam String inputFile, @RequestParam String outputFile) {
         logger.info("Received request to process entries from file: {} and save results to: {}", inputFile, outputFile);
         try {
             return service.processFile(inputFile, outputFile);
