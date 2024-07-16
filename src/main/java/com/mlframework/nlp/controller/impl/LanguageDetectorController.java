@@ -62,7 +62,7 @@ public class LanguageDetectorController implements ModelController {
         return service.processText(text);
     }
 
-    @PostMapping("/process-file")
+    @GetMapping("/process-file")
     @Override
     public String processFile(@RequestParam String inputFile,@RequestParam String outputFile) {
         logger.info("Received request to process entries from file: {} and save results to: {}", inputFile, outputFile);

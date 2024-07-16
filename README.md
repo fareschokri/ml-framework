@@ -36,7 +36,7 @@ The application exposes the following REST endpoints:
     - Parameters: `trainingDataFile`, `modelBinOutput`, `algorithm`, `cutoff`, `iterations`, `languageCode`
 - **POST /doccat/load**: Load an existing document categorizer model.
     - Parameters: `modelBinFile`
-- **POST /doccat/process-file**: Process a file using the document categorizer model.
+- **GET /doccat/process-file**: Process a file using the document categorizer model.
     - Parameters: `inputFile`, `outputFile`
 - **GET /doccat/process-text**: Process text using the document categorizer model.
     - Parameters: `text`
@@ -46,7 +46,7 @@ The application exposes the following REST endpoints:
     - Parameters: `trainingDataFile`, `modelBinOutput`, `algorithm`, `cutoff`, `iterations`
 - **POST /lang-detector/load**: Load an existing language detector model.
     - Parameters: `modelBinFile`
-- **POST /lang-detector/process-file**: Process a file using the language detector model.
+- **GET /lang-detector/process-file**: Process a file using the language detector model.
     - Parameters: `inputFile`, `outputFile`
 - **GET /lang-detector/process-text**: Process text using the language detector model.
     - Parameters: `text`
@@ -57,7 +57,7 @@ The application exposes the following REST endpoints:
     - Parameters: `trainingDataFile`, `modelBinOutput`, `algorithm`, `cutoff`, `iterations`, `languageCode`
 - **POST /tokenizer/load**: Load an existing tokenizer model.
     - Parameters: `modelBinFile`
-- **POST /tokenizer/process-file**: Process a file using the tokenizer model.
+- **GET /tokenizer/process-file**: Process a file using the tokenizer model.
     - Parameters: `inputFile`, `outputFile`
 - **GET /tokenizer/process-text**: Process text using the tokenizer model.
     - Parameters: `text`
