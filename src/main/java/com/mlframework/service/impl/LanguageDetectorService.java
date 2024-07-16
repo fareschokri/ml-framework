@@ -3,17 +3,13 @@ package com.mlframework.service.impl;
 import com.mlframework.dataaccess.FileDataAccess;
 import com.mlframework.model.EntryLine;
 import com.mlframework.service.itf.ModelService;
-import opennlp.tools.langdetect.Language;
-import opennlp.tools.langdetect.LanguageDetector;
-import opennlp.tools.langdetect.LanguageDetectorME;
-import opennlp.tools.langdetect.LanguageDetectorModel;
+import opennlp.tools.langdetect.*;
+import opennlp.tools.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +21,39 @@ public class LanguageDetectorService implements ModelService {
     private LanguageDetector categorizer;
     private static final Logger logger = LoggerFactory.getLogger(LanguageDetectorService.class);
 
+    @Override
+    public void trainModel(Object...params) throws IOException {
+        if (params.length != 5) {
+            throw new IllegalArgumentException("Expected 5 parameters: trainingDataFile, modelBinOutput, algorithm, cutoff, iterations");
+        }
+        String trainingDataFile = (String) params[0];
+        String modelBinOutput = (String) params[1];
+        String algorithm = (String) params[2];
+        int cutoff = (int) params[3];
+        int iterations = (int) params[4];
+        if (!VALID_ALGORITHMS.contains(algorithm.toUpperCase())) {
+            throw new IllegalArgumentException("Invalid algorithm: " + algorithm+
+                    " Should be one of:\n"+VALID_ALGORITHMS);
+        }
+
+        logger.info("Starting model training with data file: {}", trainingDataFile);
+        InputStreamFactory dataIn = new MarkableFileInputStreamFactory(new File(trainingDataFile));
+        ObjectStream<String> lineStream = new PlainTextByLineStream(dataIn, "UTF-8");
+
+        ObjectStream<LanguageSample> sampleStream = new LanguageDetectorSampleStream(lineStream);
+
+        TrainingParameters trainingParameters = new TrainingParameters();
+        trainingParameters.algorithm(algorithm);
+        trainingParameters.put(TrainingParameters.CUTOFF_PARAM, Integer.toString(cutoff));
+        trainingParameters.put(TrainingParameters.ITERATIONS_PARAM, Integer.toString(iterations));
+
+        LanguageDetectorModel model = LanguageDetectorME.train(sampleStream, trainingParameters,  new LanguageDetectorFactory());
+        categorizer = new LanguageDetectorME(model);
+        OutputStream modelOut = new BufferedOutputStream(new FileOutputStream(modelBinOutput));
+        model.serialize(modelOut);
+        modelOut.close();
+
+    }
     @Override
     public void loadModel(String modelFile) throws IOException {
         logger.info("Loading model from file: {}", modelFile);

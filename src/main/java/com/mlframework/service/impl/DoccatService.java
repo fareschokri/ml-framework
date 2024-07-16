@@ -15,18 +15,25 @@ import java.util.*;
 
 
 @Service
-public class DocCatService implements ModelService {
+public class DoccatService implements ModelService {
 
     private DoccatModel model;
     private DocumentCategorizerME categorizer;
 
-    private static final Logger logger = LoggerFactory.getLogger(DocCatService.class);
-
-    private static final Set<String> VALID_ALGORITHMS = Set.of("MAXENT", "PERCEPTRON", "NAIVEBAYES");
+    private static final Logger logger = LoggerFactory.getLogger(DoccatService.class);
 
 
-    public void trainModel(String trainingDataFile, String lang, String modelBinOutput,
-                           String algorithm, int cutoff) throws IOException {
+    @Override
+    public void trainModel(Object...params) throws IOException {
+        if (params.length != 6) {
+            throw new IllegalArgumentException("Expected 6 parameters: trainingDataFile, languageCode, modelBinOutput, algorithm, cutoff, iterations");
+        }
+        String trainingDataFile = (String) params[0];
+        String modelBinOutput = (String) params[1];
+        String algorithm = (String) params[2];
+        int cutoff = (int) params[3];
+        int iterations = (int) params[4];
+        String lang = (String) params[5];
         if (!VALID_ALGORITHMS.contains(algorithm.toUpperCase())) {
             throw new IllegalArgumentException("Invalid algorithm: " + algorithm+
                     " Should be one of:\n"+VALID_ALGORITHMS);
@@ -35,18 +42,19 @@ public class DocCatService implements ModelService {
         logger.info("Starting model training with data file: {}", trainingDataFile);
         InputStreamFactory dataIn = new MarkableFileInputStreamFactory(new File(trainingDataFile));
         ObjectStream<String> lineStream = new PlainTextByLineStream(dataIn, "UTF-8");
-        try(ObjectStream<DocumentSample> sampleStream = new DocumentSampleStream(lineStream))
-        {
-            TrainingParameters trainingParameters = new TrainingParameters();
-            trainingParameters.algorithm(algorithm);
-            trainingParameters.put(TrainingParameters.CUTOFF_PARAM, Integer.toString(cutoff));
+        ObjectStream<DocumentSample> sampleStream = new DocumentSampleStream(lineStream);
 
-            model = DocumentCategorizerME.train(lang, sampleStream, trainingParameters, new DoccatFactory());
-            categorizer = new DocumentCategorizerME(model);
-            OutputStream modelOut = new BufferedOutputStream(new FileOutputStream(modelBinOutput));
-            model.serialize(modelOut);
-            modelOut.close();
-        }
+        TrainingParameters trainingParameters = new TrainingParameters();
+        trainingParameters.algorithm(algorithm);
+        trainingParameters.put(TrainingParameters.CUTOFF_PARAM, Integer.toString(cutoff));
+        trainingParameters.put(TrainingParameters.ITERATIONS_PARAM, Integer.toString(iterations));
+
+        model = DocumentCategorizerME.train(lang, sampleStream, trainingParameters, new DoccatFactory());
+        categorizer = new DocumentCategorizerME(model);
+        OutputStream modelOut = new BufferedOutputStream(new FileOutputStream(modelBinOutput));
+        model.serialize(modelOut);
+        modelOut.close();
+
         logger.info("Model training completed and saved successfully to {}.", modelBinOutput);
     }
 

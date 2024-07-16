@@ -20,6 +20,24 @@ public class LanguageDetectorController implements ModelController {
         this.service = langDetectorService;
     }
 
+    @PostMapping("/train")
+    @Override
+    public String trainModel(@RequestParam String trainingDataFile,
+                             @RequestParam(defaultValue = "${mlframework.langDetector.output}") String modelBinOutput,
+                             @RequestParam(defaultValue = "${mlframework.langDetector.algorithm}") String algorithm,
+                             @RequestParam(defaultValue = "${mlframework.langDetector.cutoff}") String cutoff,
+                             @RequestParam(defaultValue = "${mlframework.langDetector.iterations}") String iterations,
+                             @RequestParam(required = false) String unusedLangCode) {
+        logger.info("Received request to train Language Detector model with data file: {}", trainingDataFile);
+        try {
+            service.trainModel(trainingDataFile, modelBinOutput, algorithm, Integer.parseInt(cutoff),
+                    Integer.parseInt(iterations));
+            return "Model trained, loaded and saved successfully to "+ modelBinOutput;
+        } catch (IOException e) {
+            logger.error("Error training model", e);
+            return "Error training model: " + e.getMessage();
+        }
+    }
     @PostMapping("/load")
     @Override
     public String loadModel(@RequestParam String modelBinFile) {

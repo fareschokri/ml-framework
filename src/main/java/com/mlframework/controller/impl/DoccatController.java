@@ -2,7 +2,7 @@ package com.mlframework.controller.impl;
 
 
 import com.mlframework.controller.itf.ModelController;
-import com.mlframework.service.impl.DocCatService;
+import com.mlframework.service.impl.DoccatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,27 +13,30 @@ import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/doccat")
-public class DocCatController implements ModelController {
+public class DoccatController implements ModelController {
 
-    private static final Logger logger = LoggerFactory.getLogger(DocCatController.class);
+    private static final Logger logger = LoggerFactory.getLogger(DoccatController.class);
 
-    private final DocCatService service;
+    private final DoccatService service;
 
     @Autowired
-    private DocCatController(DocCatService docCatService){
+    private DoccatController(DoccatService docCatService){
         this.service = docCatService;
     }
 
     @PostMapping("/train")
+    @Override
     public String trainModel(@RequestParam String trainingDataFile,
                              @RequestParam(defaultValue = "${mlframework.doccat.output}") String modelBinOutput,
-                             @RequestParam(defaultValue = "${mlframework.doccat.languageCode}") String languageCode,
                              @RequestParam(defaultValue = "${mlframework.doccat.algorithm}") String algorithm,
-                             @RequestParam(defaultValue = "${mlframework.doccat.cutoff}") String cutoff) {
+                             @RequestParam(defaultValue = "${mlframework.doccat.cutoff}") String cutoff,
+                             @RequestParam(defaultValue = "${mlframework.doccat.iterations}") String iterations,
+                             @RequestParam(defaultValue = "${mlframework.doccat.languageCode}") String languageCode) {
         logger.info("Received request to train model with data file: {}", trainingDataFile);
         try {
-            service.trainModel(trainingDataFile, languageCode, modelBinOutput, algorithm, Integer.parseInt(cutoff));
-            return "Model trained and saved successfully.";
+            service.trainModel(trainingDataFile, modelBinOutput, algorithm,
+                    Integer.parseInt(cutoff), Integer.parseInt(iterations), languageCode);
+            return "Model trained, loaded and saved successfully to "+ modelBinOutput;
         } catch (IOException e) {
             logger.error("Error training model", e);
             return "Error training model: " + e.getMessage();
