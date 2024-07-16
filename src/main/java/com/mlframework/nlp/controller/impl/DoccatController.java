@@ -1,8 +1,8 @@
-package com.mlframework.controller.impl;
+package com.mlframework.nlp.controller.impl;
 
 
-import com.mlframework.controller.itf.ModelController;
-import com.mlframework.service.impl.DoccatService;
+import com.mlframework.nlp.controller.itf.ModelController;
+import com.mlframework.nlp.service.impl.DoccatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,9 +19,14 @@ public class DoccatController implements ModelController {
 
     private final DoccatService service;
 
+    /**
+     * Constructs a new {@code DoccatController} with the given service.
+     *
+     * @param doccatService the document categorizer service
+     */
     @Autowired
-    private DoccatController(DoccatService docCatService){
-        this.service = docCatService;
+    private DoccatController(DoccatService doccatService){
+        this.service = doccatService;
     }
 
     @PostMapping("/train")
@@ -36,7 +41,7 @@ public class DoccatController implements ModelController {
         try {
             service.trainModel(trainingDataFile, modelBinOutput, algorithm,
                     Integer.parseInt(cutoff), Integer.parseInt(iterations), languageCode);
-            return "Model trained, loaded and saved successfully to "+ modelBinOutput;
+            return "Model trained, loaded and successfully saved to "+ modelBinOutput;
         } catch (IOException e) {
             logger.error("Error training model", e);
             return "Error training model: " + e.getMessage();

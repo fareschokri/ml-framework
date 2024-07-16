@@ -1,8 +1,8 @@
-package com.mlframework.service.impl;
+package com.mlframework.nlp.service.impl;
 
-import com.mlframework.dataaccess.FileDataAccess;
-import com.mlframework.model.EntryLine;
-import com.mlframework.service.itf.ModelService;
+import com.mlframework.nlp.dataaccess.FileDataAccess;
+import com.mlframework.nlp.model.EntryLine;
+import com.mlframework.nlp.service.itf.ModelService;
 import opennlp.tools.langdetect.*;
 import opennlp.tools.util.*;
 import org.slf4j.Logger;
@@ -52,6 +52,8 @@ public class LanguageDetectorService implements ModelService {
         OutputStream modelOut = new BufferedOutputStream(new FileOutputStream(modelBinOutput));
         model.serialize(modelOut);
         modelOut.close();
+
+        logger.info("Model training completed and successfully saved to {}.", modelBinOutput);
 
     }
     @Override

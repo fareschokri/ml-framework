@@ -1,7 +1,7 @@
-package com.mlframework.controller.impl;
+package com.mlframework.nlp.controller.impl;
 
-import com.mlframework.controller.itf.ModelController;
-import com.mlframework.service.impl.LanguageDetectorService;
+import com.mlframework.nlp.controller.itf.ModelController;
+import com.mlframework.nlp.service.impl.LanguageDetectorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +15,11 @@ public class LanguageDetectorController implements ModelController {
     private static final Logger logger = LoggerFactory.getLogger(LanguageDetectorController.class);
     private final LanguageDetectorService service;
 
+    /**
+     * Constructs a new {@code LanguageDetectorController} with the given service.
+     *
+     * @param langDetectorService the language detector service
+     */
     @Autowired
     private LanguageDetectorController(LanguageDetectorService langDetectorService){
         this.service = langDetectorService;
@@ -32,7 +37,7 @@ public class LanguageDetectorController implements ModelController {
         try {
             service.trainModel(trainingDataFile, modelBinOutput, algorithm, Integer.parseInt(cutoff),
                     Integer.parseInt(iterations));
-            return "Model trained, loaded and saved successfully to "+ modelBinOutput;
+            return "Model trained, loaded and successfully saved to "+ modelBinOutput;
         } catch (IOException e) {
             logger.error("Error training model", e);
             return "Error training model: " + e.getMessage();
@@ -67,6 +72,13 @@ public class LanguageDetectorController implements ModelController {
             return "Error processing entries: " + e.getMessage();
         }
     }
+
+    /**
+     *
+     * Gets all Model languages.
+     *
+     * @return load model languages.
+     */
     @GetMapping("/get-languages")
     public String getLanguages() {
         logger.info("Received request to get model languages");

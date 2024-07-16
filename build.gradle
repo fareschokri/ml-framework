@@ -4,7 +4,7 @@ plugins {
     id 'java'
 }
 
-group = 'org.classification'
+group = 'com.ml-framework'
 version = '1.0-SNAPSHOT'
 
 repositories {

@@ -1,10 +1,10 @@
-package com.mlframework.service.impl;
+package com.mlframework.nlp.service.impl;
 
-import com.mlframework.dataaccess.FileDataAccess;
-import com.mlframework.service.itf.ModelService;
+import com.mlframework.nlp.dataaccess.FileDataAccess;
+import com.mlframework.nlp.service.itf.ModelService;
 import opennlp.tools.doccat.*;
 import opennlp.tools.util.*;
-import com.mlframework.model.EntryLine;
+import com.mlframework.nlp.model.EntryLine;
 import org.springframework.stereotype.Service;
 
 import org.slf4j.Logger;
@@ -55,7 +55,7 @@ public class DoccatService implements ModelService {
         model.serialize(modelOut);
         modelOut.close();
 
-        logger.info("Model training completed and saved successfully to {}.", modelBinOutput);
+        logger.info("Model training completed and successfully saved to {}.", modelBinOutput);
     }
 
     @Override
@@ -81,7 +81,11 @@ public class DoccatService implements ModelService {
     }
 
 
-
+    /**
+     * Classifies a list of entry lines using the loaded model.
+     *
+     * @param entryLines the list of entry lines to be classified
+     */
     private void doClassify(List<EntryLine> entryLines) {
             logger.info("Classifying entry lines.");
             for (EntryLine entryLine : entryLines) {

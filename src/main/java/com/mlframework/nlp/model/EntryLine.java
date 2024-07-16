@@ -1,4 +1,4 @@
-package com.mlframework.model;
+package com.mlframework.nlp.model;
 
 public class EntryLine {
 

@@ -1,7 +1,7 @@
-package com.mlframework.controller.impl;
+package com.mlframework.nlp.controller.impl;
 
-import com.mlframework.controller.itf.ModelController;
-import com.mlframework.service.impl.TokenizerService;
+import com.mlframework.nlp.controller.itf.ModelController;
+import com.mlframework.nlp.service.impl.TokenizerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +16,11 @@ public class TokenizerController implements ModelController {
     private final TokenizerService service;
     private static final Logger logger = LoggerFactory.getLogger(TokenizerController.class);
 
+    /**
+     * Constructs a new {@code TokenizerController} with the given service.
+     *
+     * @param tokenizerService the tokenizer service
+     */
     @Autowired
     private TokenizerController(TokenizerService tokenizerService){this.service = tokenizerService;}
 
