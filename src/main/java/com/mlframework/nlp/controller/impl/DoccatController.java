@@ -36,7 +36,8 @@ public class DoccatController implements ModelController {
                              @RequestParam(defaultValue = "${mlframework.doccat.algorithm}") String algorithm,
                              @RequestParam(defaultValue = "${mlframework.doccat.cutoff}") String cutoff,
                              @RequestParam(defaultValue = "${mlframework.doccat.iterations}") String iterations,
-                             @RequestParam(defaultValue = "${mlframework.doccat.languageCode}") String languageCode) {
+                             @RequestParam(defaultValue = "${mlframework.doccat.languageCode}") String languageCode,
+                             @RequestParam(required = false) String unusedFinderType) {
         logger.info("Received request to train model with data file: {}", trainingDataFile);
         try {
             service.trainModel(trainingDataFile, modelBinOutput, algorithm,
