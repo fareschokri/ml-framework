@@ -24,7 +24,7 @@ public class LanguageDetectorService implements ModelService {
     @Override
     public void trainModel(Object...params) throws IOException {
         if (params.length != 5) {
-            throw new IllegalArgumentException("Expected 5 parameters: trainingDataFile, modelBinOutput, algorithm, cutoff, iterations");
+            throw new IllegalArgumentException("Expected 5 parameters: trainingDataFile, modelBinOutput, algorithm, cutoff and iterations");
         }
         String trainingDataFile = (String) params[0];
         String modelBinOutput = (String) params[1];

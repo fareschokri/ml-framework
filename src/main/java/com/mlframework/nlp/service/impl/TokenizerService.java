@@ -21,7 +21,8 @@ public class TokenizerService implements ModelService {
     @Override
     public void trainModel(Object...params) throws IOException {
         if (params.length != 6) {
-            throw new IllegalArgumentException("Expected 6 parameters: trainingDataFile, languageCode, modelBinOutput, algorithm, cutoff, iterations");
+            throw new IllegalArgumentException("Expected 6 parameters: trainingDataFile, " +
+                    "modelBinOutput, algorithm, cutoff, iterations and languageCode");
         }
         String trainingDataFile = (String) params[0];
         String modelBinOutput = (String) params[1];
