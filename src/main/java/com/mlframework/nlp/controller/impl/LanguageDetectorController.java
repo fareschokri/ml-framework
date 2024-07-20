@@ -32,7 +32,8 @@ public class LanguageDetectorController implements ModelController {
                              @RequestParam(defaultValue = "${mlframework.langDetector.algorithm}") String algorithm,
                              @RequestParam(defaultValue = "${mlframework.langDetector.cutoff}") String cutoff,
                              @RequestParam(defaultValue = "${mlframework.langDetector.iterations}") String iterations,
-                             @RequestParam(required = false) String unusedLangCode) {
+                             @RequestParam(required = false) String unusedLangCode,
+                             @RequestParam(required = false) String unusedFinderType) {
         logger.info("Received request to train Language Detector model with data file: {}", trainingDataFile);
         try {
             service.trainModel(trainingDataFile, modelBinOutput, algorithm, Integer.parseInt(cutoff),

@@ -24,11 +24,12 @@ public interface ModelController {
      * @throws IOException if an I/O error occurs during training
      */
     String trainModel(@RequestParam String trainingDataFile,
-                 @RequestParam String modelBinOutput,
-                 @RequestParam String algorithm,
-                 @RequestParam String cutoff,
-                 @RequestParam String iterations,
-                 @RequestParam String languageCode) throws IOException;
+                        @RequestParam String modelBinOutput,
+                        @RequestParam String algorithm,
+                        @RequestParam String cutoff,
+                        @RequestParam String iterations,
+                        @RequestParam String languageCode,
+                        @RequestParam String finderType) throws IOException;
 
     /**
      *
