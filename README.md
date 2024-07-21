@@ -1,5 +1,3 @@
-## README
-
 # MLFramework Application
 
 ## Purpose
@@ -26,6 +24,12 @@ The MLFramework application is designed to provide a RESTful API for machine lea
 - **Load Model**: Load a pre-trained tokenizer model from a binary file.
 - **Process File**: Tokenize entries from an input file and save the results to an output file.
 - **Process Text**: Tokenize a given text.
+
+### Name Finder
+- **Train Model**: Train a name finder model using a training data file.
+- **Load Model**: Load a pre-trained name finder model from a binary file.
+- **Process File**: Detect named entities from an input file and save the results to an output file.
+- **Process Text**: Detect named entities for a given text.
 
 ## Usage
 
@@ -62,11 +66,22 @@ The application exposes the following REST endpoints:
 - **GET /tokenizer/process-text**: Process text using the tokenizer model.
     - Parameters: `text`
 
+### Name Finder Endpoints
+- **POST /name-finder/train**: Train a new name finder model, currently supports one named entity (typeFinder) training. Eventually to handle multiple entities.
+    - Parameters: `trainingDataFile`, `modelBinOutput`, `algorithm`, `cutoff`, `iterations`, `languageCode`, `typeFinder`
+- **POST /name-finder/load**: Load an existing name finder model.
+    - Parameters: `modelBinFile`
+- **GET /name-finder/process-file**: Process a file using the name finder model.
+    - Parameters: `inputFile`, `outputFile`
+- **GET /name-finder/process-text**: Process text using the name finder model.
+    - Parameters: `text`
+
 ### Training Data Formats
 Depending on the model, each line of the training data file should respect: 
 - **Document Categorizer**: \<category>\tab\<text>
 - **Language Detector**: \<languageCode>\tab\<text>
 - **Tokenizer**: \<text>
+- **Name Finder**: \<text> \<START:typeName> \<entity> \<END> \<text>
 
 ## Setup and Configuration
 
