@@ -80,8 +80,10 @@ The application exposes the following REST endpoints:
 Depending on the model, each line of the training data file should respect: 
 - **Document Categorizer**: \<category>\tab\<text>
 - **Language Detector**: \<languageCode>\tab\<text>
-- **Tokenizer**: \<text>
+- **Tokenizer**: \<token>\<SPLIT> \<token>\<SPLIT> \<token> \<text> (Note that tokens are split automatically on whitespace and at least one <SPLIT> tag must be present in the training text.)
 - **Name Finder**: \<text> \<START:typeName> \<entity> \<END> \<text>
+
+More information on training formats and opennlp API at: https://opennlp.apache.org/docs/2.3.3/manual/opennlp.html
 
 ## Setup and Configuration
 
