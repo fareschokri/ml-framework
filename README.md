@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The MLFramework application is designed to provide a RESTful API for machine learning tasks, focusing on Natural Language Processing (NLP). The application supports training, loading, and using models for document categorization, language detection, and tokenization. This framework leverages the Apache OpenNLP library to perform the various tasks.
+The MLFramework application is designed to provide a RESTful API for machine learning tasks, focusing on Natural Language Processing (NLP). The application supports training, loading and using models for document categorization, language detection, tokenization and named entity recognition. This framework leverages the Apache OpenNLP library to perform the various tasks.
 
 ## Features
 
