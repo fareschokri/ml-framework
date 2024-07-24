@@ -43,7 +43,7 @@ public class NameFinderService implements ModelService {
         try (ObjectStream<String> lineStream = new PlainTextByLineStream(dataIn, "UTF-8")) {
 
             TrainingParameters trainingParameters = new TrainingParameters();
-            trainingParameters.algorithm(algorithm);
+            trainingParameters.put(TrainingParameters.ALGORITHM_PARAM, algorithm);
             trainingParameters.put(TrainingParameters.CUTOFF_PARAM, Integer.toString(cutoff));
             trainingParameters.put(TrainingParameters.ITERATIONS_PARAM, Integer.toString(iterations));
 

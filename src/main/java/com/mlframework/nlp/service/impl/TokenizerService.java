@@ -42,7 +42,7 @@ public class TokenizerService implements ModelService {
         ObjectStream<TokenSample> sampleStream = new TokenSampleStream(lineStream);
 
         TrainingParameters trainingParameters = new TrainingParameters();
-        trainingParameters.algorithm(algorithm);
+        trainingParameters.put(TrainingParameters.ALGORITHM_PARAM, algorithm);
         trainingParameters.put(TrainingParameters.CUTOFF_PARAM, Integer.toString(cutoff));
         trainingParameters.put(TrainingParameters.ITERATIONS_PARAM, Integer.toString(iterations));
 
